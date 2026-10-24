@@ -1,172 +1,80 @@
 {% extends 'votaciones/base.html' %}
-{% block content %}
 
-<!-- ENCABEZADO PRINCIPAL -->
-<div class="bg-white p-4 p-md-5 rounded-4 shadow text-center mb-4 border-top border-4 border-danger">
-    <h1 class="header-title display-5 text-uppercase fw-bold" style="font-family: 'Cinzel', serif; letter-spacing: 2px;">
-        Festival de la Leyenda Vallenata
-    </h1>
-    <p class="header-subtitle text-uppercase fw-bold text-danger mb-0">Valledupar · Colombia</p>
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12 text-center">
+        <h1 class="display-5 fw-bold text-primary">Festival Vallenato 2027</h1>
+        <p class="lead">Vota por tu artista favorito y sigue los resultados en tiempo real.</p>
+        <span class="badge bg-secondary fs-6">Total Votos Registrados: {{ total_votos }}</span>
+    </div>
 </div>
 
-<!-- SECCIÓN INTRODUCCIÓN Y OBJETIVOS -->
-<div class="row mb-4">
-    <div class="col-md-6 mb-3 mb-md-0">
-        <div class="card card-custom-intro shadow h-100 border-0 p-3" style="background: rgba(255,255,255,0.95);">
-            <div class="card-body">
-                <h5 class="card-title text-warning fw-bold mb-3">
-                    <i class="bi bi-book me-2"></i>Introducción
-                </h5>
-                <p class="card-text text-secondary" style="text-align: justify; line-height: 1.6;">
-                    El Festival de la Leyenda Vallenata es el evento cultural folclórico más importante de Colombia. Celebrado anualmente en Valledupar, busca preservar, promover y enaltecer las cuatro formas líricas y rítmicas del vallenato: el paseo, el merengue, la puya y el son, declarados Patrimonio Cultural Inmaterial de la Humanidad por la UNESCO.
-                </p>
-            </div>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <!-- SECCIÓN DE CANDIDATOS PARA VOTAR -->
+    <div class="col-lg-8 mb-4">
+        <h3 class="border-bottom pb-2 mb-3">Candidatos</h3>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for candidato in candidatos %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body d-flex flex-column">
+                            <span class="badge bg-info text-dark mb-2 align-self-start">{{ candidato.categoria }}</span>
+                            <h5 class="card-title fw-bold">{{ candidato.nombre }}</h5>
+                            <p class="card-text text-muted flex-grow-1">{{ candidato.descripcion }}</p>
+                            
+                            <div class="mt-3">
+                                {% if user.is_authenticated %}
+                                    {% if ha_votado %}
+                                        <button class="btn btn-secondary w-100" disabled>Ya has registrado tu voto</button>
+                                    {% else %}
+                                        <a href="{% url 'votar' candidato.id %}" class="btn btn-success w-100 fw-bold">Votar por {{ candidato.nombre }}</a>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{% url 'login' %}" class="btn btn-outline-primary w-100">Inicia sesión para votar</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-info">No hay candidatos registrados por el momento.</div>
+                </div>
+            {% endfor %}
         </div>
     </div>
-    <div class="col-md-6">
-        <div class="card card-custom-obj shadow h-100 border-0 p-3" style="background: rgba(255,255,255,0.95);">
-            <div class="card-body">
-                <h5 class="card-title text-primary fw-bold mb-3">
-                    <i class="bi bi-bullseye me-2"></i>Objetivo del Sistema
-                </h5>
-                <ul class="text-secondary ps-3" style="line-height: 1.6;">
-                    <li class="mb-2"><strong>Participación Democrática:</strong> Permitir que la comunidad vote digitalmente por sus aspirantes favoritos a Rey Vallenato.</li>
-                    <li class="mb-2"><strong>Difusión Cultural:</strong> Difundir las composiciones musicales e interpretaciones mediante archivos multimedia interactivos.</li>
-                    <li class="mb-0"><strong>Transparencia:</strong> Registrar en tiempo real el escrutinio de votos de cada participante.</li>
+
+    <!-- SECCIÓN DE TABLA DE POSICIONES / QUIÉN VA EN PRIMER LUGAR -->
+    <div class="col-lg-4">
+        <h3 class="border-bottom pb-2 mb-3">Ranking actual</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for candidato in candidatos %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <div>
+                                {% if forloop.first %}
+                                    <span class="badge bg-warning text-dark me-1">👑 1° Lugar</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark me-1">{{ forloop.counter }}°</span>
+                                {% endif %}
+                                <strong>{{ candidato.nombre }}</strong>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">{{ candidato.voto_set.count }} votos</span>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
 </div>
-
-<!-- SECCIÓN INSTRUMENTOS TRADICIONALES -->
-<div class="bg-white p-4 rounded-4 shadow mb-5">
-    <h4 class="text-center fw-bold mb-4 text-dark">
-        <span class="me-2">🪗</span>Instrumentos Tradicionales
-    </h4>
-    <div class="row text-center">
-        <div class="col-md-4 mb-3 mb-md-0">
-            <div class="p-3 instrument-card bg-light rounded-3">
-                <div class="display-6 mb-2">🪗</div>
-                <h6 class="fw-bold text-dark">El Acordeón</h6>
-                <p class="small text-muted mb-0">Alma y guía melodiosa del conjunto vallenato.</p>
-            </div>
-        </div>
-        <div class="col-md-4 mb-3 mb-md-0">
-            <div class="p-3 instrument-card bg-light rounded-3">
-                <div class="display-6 mb-2">🥁</div>
-                <h6 class="fw-bold text-dark">La Caja Vallenata</h6>
-                <p class="small text-muted mb-0">Ritmo de percusión con raíces africanas.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="p-3 instrument-card bg-light rounded-3">
-                <div class="display-6 mb-2">🥢</div>
-                <h6 class="fw-bold text-dark">La Guacharaca</h6>
-                <p class="small text-muted mb-0">Instrumento autóctono de rascado indígena.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MENSAJES DE ESTADO (CONFIRMACIÓN DE VOTO) -->
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show fw-bold shadow-sm" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    {% endfor %}
-{% endif %}
-
-<!-- SECCIÓN DE EDICIONES, CATEGORÍAS Y CANDIDATOS (TODO EN EL INICIO) -->
-{% for edicion in ediciones %}
-    <div class="card shadow-lg border-0 rounded-4 overflow-hidden mb-5" style="background: rgba(255, 255, 255, 0.96);">
-        <!-- TÍTULO DE LA EDICIÓN CON BUEN CONTRASTE -->
-        <div class="card-header bg-dark text-warning py-3 px-4 d-flex justify-content-between align-items-center">
-            <h3 class="fw-bold mb-0 text-uppercase" style="font-family: 'Cinzel', serif; letter-spacing: 1px;">
-                🏆 {{ edicion.nombre }} ({{ edicion.anio }})
-            </h3>
-            <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill">Sede Oficial: Valledupar</span>
-        </div>
-
-        <div class="card-body p-4">
-            {% for categoria in edicion.categorias.all %}
-                <h4 class="fw-bold text-success border-bottom border-3 border-success pb-2 mb-4">
-                    Categoría: {{ categoria.nombre }}
-                </h4>
-
-                {% for votacion in categoria.votaciones.all %}
-                    <div class="mb-4 p-3 bg-light rounded-4 border">
-                        <h5 class="fw-bold text-primary mb-1">{{ votacion.titulo }}</h5>
-                        <p class="text-muted small mb-4">{{ votacion.descripcion|default:"Votación oficial del festival." }}</p>
-
-                        <div class="row g-4">
-                            {% for opcion in votacion.opciones.all %}
-                                <div class="col-md-6 col-lg-4">
-                                    <div class="card h-100 shadow-sm border-0 rounded-4 text-center p-3 bg-white">
-                                        <!-- FOTO O ICONO DEL CANTANTE -->
-                                        {% if opcion.foto_url %}
-                                            <img src="{{ opcion.foto_url }}" class="card-img-top rounded-4 object-fit-cover mb-3" alt="{{ opcion.nombre_candidato }}" style="height: 200px;">
-                                        {% else %}
-                                            <div class="bg-light rounded-4 d-flex align-items-center justify-content-center mb-3" style="height: 200px;">
-                                                <span class="fs-1">🎤</span>
-                                            </div>
-                                        {% endif %}
-
-                                        <div class="card-body d-flex flex-column p-0">
-                                            <h5 class="fw-bold text-dark mb-1">{{ opcion.nombre_candidato }}</h5>
-                                            <p class="text-muted small mb-3">{{ opcion.biografia }}</p>
-
-                                            <!-- MÚSICA DE MUESTRA -->
-                                            {% if opcion.audio_url %}
-                                                <div class="mb-3">
-                                                    <label class="form-label small fw-semibold text-secondary">Escuchar muestra:</label>
-                                                    <audio controls class="w-100 style-audio">
-                                                        <source src="{{ opcion.audio_url }}" type="audio/mpeg">
-                                                    </audio>
-                                                </div>
-                                            {% endif %}
-
-                                            <div class="mt-auto">
-                                                <span class="badge bg-primary fs-6 mb-3 rounded-pill px-3 py-2">
-                                                    📊 {{ opcion.votos }} Votos
-                                                </span>
-
-                                                <!-- BOTÓN Y RESTRICCIÓN DE VOTO ÚNICO -->
-                                                {% if user.is_authenticated %}
-                                                    {% if votacion.id in votaciones_votadas %}
-                                                        <button class="btn btn-secondary w-100 rounded-pill fw-bold" disabled>
-                                                            ✓ Ya votaste en esta categoría
-                                                        </button>
-                                                    {% else %}
-                                                        <form action="{% url 'votar' opcion.id %}" method="post">
-                                                            {% csrf_token %}
-                                                            <button type="submit" class="btn btn-warning w-100 rounded-pill fw-bold text-dark shadow-sm">
-                                                                🗳️ Votar por {{ opcion.nombre_candidato }}
-                                                            </button>
-                                                        </form>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <a href="{% url 'login' %}" class="btn btn-outline-secondary w-100 rounded-pill btn-sm">
-                                                        Inicia sesión para votar
-                                                    </a>
-                                                {% endif %}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% empty %}
-                                <p class="text-muted small">No hay candidatos registrados en esta votación.</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endfor %}
-            {% empty %}
-                <p class="text-muted">No hay categorías registradas en esta edición.</p>
-            {% endfor %}
-        </div>
-    </div>
-{% endfor %}
-
 {% endblock %}

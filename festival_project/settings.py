@@ -1,20 +1,20 @@
 import os
 from pathlib import Path
 
-# Ruta base del proyecto
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# CLAVE DE SEGURIDAD
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tu-clave-secreta-aqui')
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-festival-vallenato-key-2027')
 
-# Modo Depuración: False en producción
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
-# Dominio / Hosts permitidos
 ALLOWED_HOSTS = ['*']
 
 
-# APPS INSTALADAS
+# Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,12 +22,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
-    # Tu aplicación
     'votaciones',
 ]
 
-# MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -39,7 +36,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'festival_project.urls'
+ROOT_URLCONF = 'festival_vallenato.urls'
 
 TEMPLATES = [
     {
@@ -57,31 +54,23 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'festival_project.wsgi.application'
+WSGI_APPLICATION = 'festival_vallenato.wsgi.application'
 
 
-# BASE DE DATOS
-if 'RENDER' in os.environ or not DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+# Database
+# https://docs.djangoproject.com/en/stable/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'festival_vallenato',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': '127.0.0.1',
-            'PORT': '3306',
-        }
-    }
+}
 
 
-# VALIDACIÓN DE CONTRASEÑAS
+# Password validation
+# https://docs.djangoproject.com/en/stable/ref/settings/#auth-password-validators
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -98,7 +87,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# IDIOMA Y ZONA HORARIA
+# Internationalization
+# https://docs.djangoproject.com/en/stable/topics/i18n/
+
 LANGUAGE_CODE = 'es-co'
 
 TIME_ZONE = 'America/Bogota'
@@ -108,18 +99,14 @@ USE_I18N = True
 USE_TZ = True
 
 
-# ARCHIVOS ESTÁTICOS (CSS, JavaScript, Imágenes)
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/stable/howto/static-files/
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-# CLAVE PRIMARIA DEFAULT
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-# REDIRECCIONES DE AUTENTICACIÓN
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
-LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

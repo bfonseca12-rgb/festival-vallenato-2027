@@ -11,28 +11,22 @@ def home(request):
         Candidato.objects.create(
             nombre="Silvestre Dangond",
             categoria="Rey Vallenato",
-            descripcion="Exponente del vallenato moderno con gran trayectoria y energía en el escenario.",
-            foto=""
+            descripcion="Exponente del vallenato moderno con gran trayectoria."
         )
         Candidato.objects.create(
             nombre="Rolando Ochoa",
             categoria="Mejor Acordeonero",
-            descripcion="Aclamado acordeonero y compositor tradicional vallenato.",
-            foto=""
+            descripcion="Aclamado acordeonero y compositor tradicional."
         )
         Candidato.objects.create(
             nombre="Elder Dayán Díaz",
             categoria="Rey Vallenato",
-            descripcion="Representante de la nueva ola vallenata con raigambre tradicional.",
-            foto=""
+            descripcion="Representante de la nueva ola vallenata."
         )
 
     candidatos = Candidato.objects.all()
-    
-    # Calcular total de votos
     total_votos = Voto.objects.count()
     
-    # Saber si el usuario actual ya votó
     ha_votado = False
     if request.user.is_authenticated:
         ha_votado = Voto.objects.filter(usuario=request.user).exists()
@@ -42,7 +36,7 @@ def home(request):
         'total_votos': total_votos,
         'ha_votado': ha_votado,
     }
-    return render(request, 'votaciones/home.html', context)
+    return render(request, 'votaciones/index.html', context)
 
 
 def register(request):

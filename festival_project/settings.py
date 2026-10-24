@@ -4,14 +4,14 @@ from pathlib import Path
 # Ruta base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# CLAVE DE SEGURIDAD (En producción real es recomendable usar variables de entorno)
+# CLAVE DE SEGURIDAD
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tu-clave-secreta-aqui')
 
 # Modo Depuración: False en producción
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Dominio / Hosts permitidos
-ALLOWED_HOSTS = ['*']  # Permite cualquier dominio o IP asignada por el proveedor de hosting
+ALLOWED_HOSTS = ['*']
 
 
 # APPS INSTALADAS
@@ -30,7 +30,7 @@ INSTALLED_APPS = [
 # MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Sirve archivos estáticos (imágenes, CSS) en producción
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -43,7 +43,7 @@ ROOT_URLCONF = 'festival_project.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.DjangoTemplates',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -61,7 +61,6 @@ WSGI_APPLICATION = 'festival_project.wsgi.application'
 
 
 # BASE DE DATOS
-# Si está en Render (producción), usa SQLite o variables de entorno.
 if 'RENDER' in os.environ or not DEBUG:
     DATABASES = {
         'default': {
@@ -111,11 +110,8 @@ USE_TZ = True
 
 # ARCHIVOS ESTÁTICOS (CSS, JavaScript, Imágenes)
 STATIC_URL = '/static/'
-
-# Carpeta de donde Django recopilará todos los estáticos para el servidor
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Almacenamiento con compresión y caché para producción mediante WhiteNoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 

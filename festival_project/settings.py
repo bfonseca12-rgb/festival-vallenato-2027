@@ -36,16 +36,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Detecta automáticamente el archivo urls.py de la carpeta raíz
-try:
-    from . import urls
-    ROOT_URLCONF = f"{Path(__file__).resolve().parent.name}.urls"
-except ImportError:
-    ROOT_URLCONF = 'votaciones.urls'
+ROOT_URLCONF = 'festival_project.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.DjangoTemplates',
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -59,7 +54,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = f"{Path(__file__).resolve().parent.name}.wsgi.application"
+WSGI_APPLICATION = 'festival_project.wsgi.application'
 
 
 # Database

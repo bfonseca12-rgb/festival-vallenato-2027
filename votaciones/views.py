@@ -6,16 +6,17 @@ from django.contrib import messages
 from .models import Candidato, Voto
 
 def home(request):
+    # Si no hay candidatos en la base de datos, los crea automáticamente
     if not Candidato.objects.exists():
         Candidato.objects.create(
             nombre="Silvestre Dangond",
             categoria="Rey Vallenato",
-            descripcion="Exponente del vallenato moderno con gran trayectoria."
+            descripcion="Exponente del vallenato moderno con gran trayectoria y energía."
         )
         Candidato.objects.create(
             nombre="Rolando Ochoa",
             categoria="Mejor Acordeonero",
-            descripcion="Aclamado acordeonero y compositor tradicional."
+            descripcion="Aclamado acordeonero y compositor tradicional vallenato."
         )
         Candidato.objects.create(
             nombre="Elder Dayán Díaz",
@@ -36,6 +37,9 @@ def home(request):
         'ha_votado': ha_votado,
     }
     return render(request, 'votaciones/index.html', context)
+
+# Alias por si alguna URL busca home_view
+home_view = home
 
 
 def register(request):

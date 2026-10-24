@@ -36,11 +36,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'festival_vallenato.urls'
+# Detecta automáticamente el archivo urls.py de la carpeta raíz
+try:
+    from . import urls
+    ROOT_URLCONF = f"{Path(__file__).resolve().parent.name}.urls"
+except ImportError:
+    ROOT_URLCONF = 'votaciones.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'django.template.backends.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -54,12 +59,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'festival_vallenato.wsgi.application'
+WSGI_APPLICATION = f"{Path(__file__).resolve().parent.name}.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/stable/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -69,8 +72,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/stable/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -88,8 +89,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/stable/topics/i18n/
-
 LANGUAGE_CODE = 'es-co'
 
 TIME_ZONE = 'America/Bogota'
@@ -100,8 +99,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/stable/howto/static-files/
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

@@ -3,9 +3,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
+from django.contrib.auth.models import User
 from .models import Candidato, Voto
 
 def home(request):
+    # Esto crea automáticamente tu usuario de administrador con su contraseña
+    user, created = User.objects.get_or_create(username='admin')
+    user.set_password('admin1234')  # Esta será tu contraseña
+    user.is_staff = True
+    user.is_superuser = True
+    user.save()
+
     candidatos = Candidato.objects.all()
     total_votos = Voto.objects.count()
     

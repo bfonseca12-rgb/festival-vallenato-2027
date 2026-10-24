@@ -1,0 +1,64 @@
+{% extends 'votaciones/base.html' %}
+
+{% block body_class %}bg-auth{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden" style="background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(10px);">
+            <div class="card-header bg-dark text-warning text-center py-4">
+                <h3 class="fw-bold mb-0 text-uppercase" style="font-family: 'Cinzel', serif; letter-spacing: 1px;">
+                    📝 Registro de Usuario
+                </h3>
+                <small class="text-white-50">Crea tu cuenta para votar en el Festival Vallenato</small>
+            </div>
+            
+            <div class="card-body p-4 p-md-5">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark small">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <div class="form-text text-muted small" style="font-size: 0.75rem;">{{ field.help_text }}</div>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <div class="text-danger small fw-semibold mt-1">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <style>
+                        input[type="text"], input[type="password"] {
+                            display: block;
+                            width: 100%;
+                            padding: 0.5rem 0.75rem;
+                            font-size: 0.95rem;
+                            border: 1px solid #ced4da;
+                            border-radius: 0.5rem;
+                        }
+                        input[type="text"]:focus, input[type="password"]:focus {
+                            border-color: #f0ad4e;
+                            outline: 0;
+                            box-shadow: 0 0 0 0.25rem rgba(240, 173, 78, 0.25);
+                        }
+                    </style>
+
+                    <button type="submit" class="btn btn-warning w-100 rounded-pill fw-bold text-dark mt-4 py-2 shadow-sm">
+                        Registrarse e Iniciar Sesión
+                    </button>
+                </form>
+            </div>
+
+            <div class="card-footer bg-light text-center py-3 border-top-0">
+                <span class="small text-muted">¿Ya tienes una cuenta?</span> 
+                <a href="{% url 'login' %}" class="fw-bold text-primary text-decoration-none small">Inicia sesión aquí</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

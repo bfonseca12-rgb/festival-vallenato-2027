@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Festival Vallenato 2027</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        /* Fondo por defecto (Página principal) */
+        body, body.bg-main {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{% static 'votaciones/fondo.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Fondo especial para Login y Registro (Cambiado a fondo_auth.jpg) */
+        body.bg-auth {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("{% static 'votaciones/fondo_auth.jpg' %}") !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+        }
+
+        .navbar-custom {
+            background-color: rgba(27, 27, 27, 0.95) !important;
+            backdrop-filter: blur(5px);
+        }
+        .brand-logo {
+            font-weight: 700;
+            color: #ffffff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body class="{% block body_class %}bg-main{% endblock %}">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm mb-4 py-3">
+        <div class="container">
+            <a class="brand-logo d-flex align-items-center" href="{% url 'home' %}">
+                <span class="badge bg-danger me-2">🪗</span> Festival Vallenato 2027
+            </a>
+            <div>
+                {% if user.is_authenticated %}
+                    <span class="text-white me-3"><i class="bi bi-person-circle me-1"></i> Hola, {{ user.username }}</span>
+                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-light btn-sm"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm me-2">Iniciar Sesión</a>
+                    <a href="{% url 'register' %}" class="btn btn-warning btn-sm text-dark fw-bold">Registrarse</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -4,12 +4,19 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.management import call_command
 from .models import Candidato, Voto
 
 def home(request):
-    # Esto crea automáticamente tu usuario de administrador con su contraseña
+    # Ejecuta automáticamente las migraciones faltantes si la tabla no existe
+    try:
+        call_command('migrate', interactive=False)
+    except Exception:
+        pass
+
+    # Crea/actualiza automáticamente el superusuario administrador
     user, created = User.objects.get_or_create(username='admin')
-    user.set_password('admin1234')  # Esta será tu contraseña
+    user.set_password('admin1234')
     user.is_staff = True
     user.is_superuser = True
     user.save()

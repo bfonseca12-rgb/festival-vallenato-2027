@@ -1,18 +1,28 @@
 from django.contrib import admin
-from .models import Edicion, Categoria, Votacion, Opcion
+from .models import Voto
 
-@admin.register(Edicion)
-class EdicionAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'anio', 'activa')
+# Intentar registrar el modelo de candidatos sin importar cómo se llame en models.py
+try:
+    from .models import Candidato
+    admin.site.register(Candidato)
+except ImportError:
+    try:
+        from .models import Participante
+        admin.site.register(Participante)
+    except ImportError:
+        pass
 
-@admin.register(Categoria)
-class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'edicion')
+# Intentar registrar los demás modelos si existen
+try:
+    from .models import Edicion
+    admin.site.register(Edicion)
+except ImportError:
+    pass
 
-@admin.register(Votacion)
-class VotacionAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'categoria', 'activa')
+try:
+    from .models import Categoria
+    admin.site.register(Categoria)
+except ImportError:
+    pass
 
-@admin.register(Opcion)
-class OpcionAdmin(admin.ModelAdmin):
-    list_display = ('nombre_candidato', 'votacion')
+admin.site.register(Voto)

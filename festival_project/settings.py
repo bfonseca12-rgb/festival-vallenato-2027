@@ -43,7 +43,7 @@ ROOT_URLCONF = 'festival_project.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'BACKEND': 'django.template.backends.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -61,18 +61,25 @@ WSGI_APPLICATION = 'festival_project.wsgi.application'
 
 
 # BASE DE DATOS
-# En desarrollo local usas MySQL. Para despliegue rápido, si el servidor no te da MySQL de inmediato,
-# puedes usar SQLite como fallback o configurar las credenciales de tu MySQL remoto.
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'festival_vallenato',
-        'USER': 'root',
-        'PASSWORD': '',  # Tu contraseña local de MySQL
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+# Si está en Render (producción), usa SQLite o variables de entorno.
+if 'RENDER' in os.environ or not DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'festival_vallenato',
+            'USER': 'root',
+            'PASSWORD': '',
+            'HOST': '127.0.0.1',
+            'PORT': '3306',
+        }
+    }
 
 
 # VALIDACIÓN DE CONTRASEÑAS

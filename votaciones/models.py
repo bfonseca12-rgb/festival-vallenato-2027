@@ -13,3 +13,6 @@ class Voto(models.Model):
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     candidato = models.ForeignKey(Candidato, on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.candidato.nombre}"

@@ -3,35 +3,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
-from .models import Voto
-
-# Importa el modelo de participante/candidato según como esté definido en models.py
-try:
-    from .models import Candidato as ModeloCandidato
-except ImportError:
-    from .models import Participante as ModeloCandidato
-
+from .models import Candidato, Voto
 
 def home(request):
-    # Si no hay registros en la base de datos, los crea automáticamente
-    if not ModeloCandidato.objects.exists():
-        ModeloCandidato.objects.create(
+    if not Candidato.objects.exists():
+        Candidato.objects.create(
             nombre="Silvestre Dangond",
             categoria="Rey Vallenato",
             descripcion="Exponente del vallenato moderno con gran trayectoria."
         )
-        ModeloCandidato.objects.create(
+        Candidato.objects.create(
             nombre="Rolando Ochoa",
             categoria="Mejor Acordeonero",
             descripcion="Aclamado acordeonero y compositor tradicional."
         )
-        ModeloCandidato.objects.create(
+        Candidato.objects.create(
             nombre="Elder Dayán Díaz",
             categoria="Rey Vallenato",
             descripcion="Representante de la nueva ola vallenata."
         )
 
-    candidatos = ModeloCandidato.objects.all()
+    candidatos = Candidato.objects.all()
     total_votos = Voto.objects.count()
     
     ha_votado = False
@@ -65,15 +57,7 @@ def votar(request, candidato_id):
         messages.error(request, 'Ya has registrado tu voto anteriormente.')
         return redirect('home')
     
-    candidato = get_object_or_404(ModeloCandidato, id=candidato_id)
-    
-    # Intenta guardar el voto adaptándose al nombre de la clave foránea en Voto
-    voto = Voto(usuario=request.user)
-    if hasattr(voto, 'candidato'):
-        voto.candidato = candidato
-    elif hasattr(voto, 'participante'):
-        voto.participante = candidato
-    voto.save()
-
+    candidato = get_object_or_404(Candidato, id=candidato_id)
+    Voto.objects.create(usuario=request.user, candidato=candidato)
     messages.success(request, f'¡Tu voto por {candidato.nombre} ha sido registrado!')
     return redirect('home')
